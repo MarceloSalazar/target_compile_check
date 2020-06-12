@@ -12,6 +12,7 @@ import pathlib
 import urllib, json
 import datetime
 import time
+import subprocess
 from datetime import datetime
 from argparse import ArgumentParser
 from prettytable import PrettyTable
@@ -51,12 +52,21 @@ def compile_app(toolchain, target):
                 
     print("command: " + command)
 
+    # Save current path        
+    #top_path = os.getcwd()
+    #print("path: " + top_path)
+    # Change to library folder before compiling
+    #temp = top_path + '/' + dft_temp_dir + self.apps[app_n]["local_dir"] + '/'
+    #os.chdir(temp)
+
+
     try:
         output = subprocess.check_call(command , shell=True, stderr=subprocess.STDOUT)
         return "PASS" # compile successful
 
     except Exception:
         print("mbed compile error\n")
+        print(subprocess.STDOUT)
         return "FAIL" # compile failed
 
 def print_table(test_result, toolchains):
@@ -82,7 +92,6 @@ def save_results(test_result, toolchains):
     filename = "results_" + str(yr) + str(mo) + str(day) + str(hr) + str(minu) + ".txt"
     filew = open(filename,"w") 
 
-    
     line = "Target " + str(' '.join(toolchains)) + "\n"
     filew.writelines(line)
 
@@ -133,7 +142,6 @@ def main():
 
     # Generate report
     # Default format PrettyTable, TODO Github markdown
-
     save_results(test_result, toolchains)
     print_table(test_result, toolchains)
 
