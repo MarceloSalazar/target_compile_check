@@ -98,35 +98,32 @@ def main():
     # Parser handling
     parser = ArgumentParser(description="Automation script to compile apps for targets/toolchain")
 
-    #parser.add_argument(
-    #    '-f', '--file', dest='file',
-    #    help='XLSX file to update with all information', required=False)
+    parser.add_argument(
+        '-m', '--target', dest='target',
+        help='Target name', required=False)
 
-    #args = parser.parse_args()
+    parser.add_argument(
+        '-t', '--toolchain', dest='toolchain',
+        help='Toolchain name (ARM, GCC_ARM)', required=False)
 
-    #db = Target_database()
+    args = parser.parse_args()
 
-    # Load spreadsheet and update
-    #if args.file:
-    #     db.update_spreadsheet(args.file)
-    #else:
-    #    db.print_table()
+    # Optional target
+    if args.target:
+        targets = str(args.target).split(",") #  compile only for a target, otherwise all targets
+    else:
+        # Read from targets.json
+        targets = get_targets()
 
-    # Optional:
-    #if args.target:
-    #  compile only for a target, otherwise all targets
-
-    # Optional:
-    #if args.toolchain:
-    #  compile only for a toolchain, otherwise all toolchains
-    toolchains = ["ARM", "GCC_ARM"]
+    # Optional toolchain:
+    if args.toolchain:
+        toolchains = str(args.toolchain).split(",")
+    else:
+        toolchains = ["ARM", "GCC_ARM"]
         
     test_result = {}
 
-    # 1. Read from targets.json
-    targets = get_targets()
-
-    # 2. Compile app for all targets, for a given toolchain
+    # Compile app for all targets, for a given toolchain
     for m in targets:
         temp = dict()
         for t in toolchains:
@@ -134,7 +131,7 @@ def main():
             temp[t] = result
         test_result[m] = temp
 
-    # 3. Generate report
+    # Generate report
     # Default format PrettyTable, TODO Github markdown
 
     save_results(test_result, toolchains)
