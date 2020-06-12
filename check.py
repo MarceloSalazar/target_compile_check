@@ -21,19 +21,9 @@ from prettytable import PrettyTable
 def get_targets():
     # Read targets from targets.json and returns list
 
-    file_found = None
-    filename = "targets.json"
-    path = os.getcwd()
-    for root, dirs, names in os.walk(path):
-        if filename in names:
-            file_found = os.path.join(root, filename)
+    file_name = "./mbed-os/targets/targets.json"
 
-    if file_found == None:
-        return False
-
-    print("File: " + file_found)
-
-    with open(file_found) as json_file:
+    with open(file_name) as json_file:
         data = json.load(json_file)
 
     targets = []
